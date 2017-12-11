@@ -80,11 +80,7 @@ load("perWest.rda")
 ```{r,echo=FALSE}
 load("westM.rda")
 ```
-```{r}
-currency <- c("£","DEM","CAD","FIM","ESP", "AUD",  "AEP","BRL","€","DKK","MXN", "CNY","HRK","NZD", "HKD", "INR","CLP", "ILS","NOK", "RUR","CZK", "ZAR","ARS", "MAD","ITL","FRF","SEK")
-  filter(!grepl(paste(currency, collapse = "|"),Budget)) %>%
 
-```
 ```{r}
 #=============== Focusing on Western films and their Budget =============
 westBudget <- westM %>%
