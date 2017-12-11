@@ -82,27 +82,8 @@ graphC <- ggplot(perWest,aes(x = production_year, y = percentage)) +
 graphC
 ```
 ```{r,eval=FALSE}
-key1950and2000 <- db%>%dbGetQuery("SELECT production_year, keyword, COUNT(*)
-FROM title t
-JOIN movie_keyword mk ON t.id = mk.movie_id
-JOIN keyword k ON k.id=mk.keyword_id
-JOIN movie_info mi ON t.id = mi.movie_id
-WHERE t.kind_id = 1
-AND mi.info_type_id = 3 AND mi.info = 'Western'
-AND production_year IN (1950,2000)
-GROUP BY production_year, keyword
-HAVING COUNT(*)>5;")
-inde<- key1950and2000 %>%
-  group_by(production_year) %>%
-  do(head(.,n=3))
-save(inde,file ="inde.rda")
-```
-```{r,echo=FALSE}
-load("inde.rda")
-inde
-```
-```{r}
-keyChange <- db%>%dbGetQuery("SELECT production_year, keyword, COUNT(*)
+
+keyShifts <- db%>%dbGetQuery("SELECT production_year, keyword, COUNT(*) as count
 FROM title t
 JOIN movie_info mi1 ON mi1.movie_id = t.id
 JOIN movie_info mi2 ON mi2.movie_id = t.id
@@ -117,36 +98,30 @@ AND mi3.info_type_id = 8 AND mi3.info = 'USA'
 AND mi4.info_type_id = 1 AND mi4.info > 40
 AND mii.info_type_id = 100 AND mii.info> 500
 AND production_year BETWEEN 1900 AND 2016
-GROUP BY production_year, keyword;
+GROUP BY production_year, keyword
+HAVING keyword IN ('cowboys-and-indians', 'anti-hero','anti-heroine');
                              ")
 ```
 cowboys-and-indians
 anti-hero (ine)
 ```{r}
-keyFive <- db%>%dbGetQuery("SELECT production_year, keyword, COUNT(*)
-FROM title t
-JOIN movie_info mi1 ON mi1.movie_id = t.id
-JOIN movie_info mi2 ON mi2.movie_id = t.id
-LEFT JOIN movie_info mi3 ON mi3.movie_id = t.id
-LEFT JOIN movie_info mi4 ON mi4.movie_id = t.id
-LEFT JOIN movie_info_idx mii ON mii.movie_id = t.id
-JOIN movie_keyword mk ON t.id = mk.movie_id
-JOIN keyword k ON k.id=mk.keyword_id
-WHERE t.kind_id = 1
-AND mi1.info_type_id = 3 AND mi1.info = 'Western'
-AND mi3.info_type_id = 8 AND mi3.info = 'USA'
-AND mi4.info_type_id = 1 AND mi4.info > 40
-AND mii.info_type_id = 100 AND mii.info> 500
-AND production_year BETWEEN 1900 AND 2016
-GROUP BY production_year, keyword
-HAVING COUNT(*)>5;
-                             ")
+#twoKey <- keyShifts %>%
+  #mutate(ifelse(keyword = c('anti-hero','anti-heroine'),))
 ```
+```{r}
+save(keyShifts, file="keyShifts.rda")
+load("keyShifts.rda")
+```
+```{r}
+ggplot(keyShifts, aes(x=production_year, y = count,fill = keyword))+
+  geom_bar(width=0.8, position = position_dodge(width=0.6), stat="identity") 
+```
+FilL <- c("#232066", "#E91D0E")
+    scale_fill_manual(values=FilL, name = "Candidate Party\n   Affiliation") +
 
 ```{r}
-inde<- keyFive %>%
-  group_by(production_year) %>%
-  do(head(.,n=3))
+graphC +
+  geom_bar(data = keyShifts, aes(x=production_year, y = count,fill = keyword),width=0.8, position = position_dodge(width=0.6), stat="identity")
 ```
 
 [GitHub repository link](https://github.com/yejhwang/mp4_DataJournalism.git)
