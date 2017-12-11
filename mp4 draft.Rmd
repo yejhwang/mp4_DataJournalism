@@ -101,8 +101,53 @@ save(inde,file ="inde.rda")
 load("inde.rda")
 inde
 ```
+```{r}
+keyChange <- db%>%dbGetQuery("SELECT production_year, keyword, COUNT(*)
+FROM title t
+JOIN movie_info mi1 ON mi1.movie_id = t.id
+JOIN movie_info mi2 ON mi2.movie_id = t.id
+LEFT JOIN movie_info mi3 ON mi3.movie_id = t.id
+LEFT JOIN movie_info mi4 ON mi4.movie_id = t.id
+LEFT JOIN movie_info_idx mii ON mii.movie_id = t.id
+JOIN movie_keyword mk ON t.id = mk.movie_id
+JOIN keyword k ON k.id=mk.keyword_id
+WHERE t.kind_id = 1
+AND mi1.info_type_id = 3 AND mi1.info = 'Western'
+AND mi3.info_type_id = 8 AND mi3.info = 'USA'
+AND mi4.info_type_id = 1 AND mi4.info > 40
+AND mii.info_type_id = 100 AND mii.info> 500
+AND production_year BETWEEN 1900 AND 2016
+GROUP BY production_year, keyword;
+                             ")
+```
+cowboys-and-indians
+anti-hero (ine)
+```{r}
+keyFive <- db%>%dbGetQuery("SELECT production_year, keyword, COUNT(*)
+FROM title t
+JOIN movie_info mi1 ON mi1.movie_id = t.id
+JOIN movie_info mi2 ON mi2.movie_id = t.id
+LEFT JOIN movie_info mi3 ON mi3.movie_id = t.id
+LEFT JOIN movie_info mi4 ON mi4.movie_id = t.id
+LEFT JOIN movie_info_idx mii ON mii.movie_id = t.id
+JOIN movie_keyword mk ON t.id = mk.movie_id
+JOIN keyword k ON k.id=mk.keyword_id
+WHERE t.kind_id = 1
+AND mi1.info_type_id = 3 AND mi1.info = 'Western'
+AND mi3.info_type_id = 8 AND mi3.info = 'USA'
+AND mi4.info_type_id = 1 AND mi4.info > 40
+AND mii.info_type_id = 100 AND mii.info> 500
+AND production_year BETWEEN 1900 AND 2016
+GROUP BY production_year, keyword
+HAVING COUNT(*)>5;
+                             ")
+```
 
-
+```{r}
+inde<- keyFive %>%
+  group_by(production_year) %>%
+  do(head(.,n=3))
+```
 
 [GitHub repository link](https://github.com/yejhwang/mp4_DataJournalism.git)
 
