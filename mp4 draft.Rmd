@@ -18,8 +18,8 @@ library(ggplot2)
 ```
 
 ```{r, eval=FALSE}
-genreBudget <- db %>%
-  dbGetQuery("SELECT title, production_year, mi1.info  AS genre,mi4.info AS Runtime, mi2.info AS Budget, mii.info AS Votes
+specgenre <- db %>%
+  dbGetQuery("SELECT title, production_year, mi1.info  AS genre,mi4.info AS Runtime, mii.info AS Votes
 FROM title t
 JOIN movie_info mi1 ON mi1.movie_id = t.id
 JOIN movie_info mi2 ON mi2.movie_id = t.id
@@ -28,10 +28,9 @@ LEFT JOIN movie_info mi4 ON mi4.movie_id = t.id
 LEFT JOIN movie_info_idx mii ON mii.movie_id = t.id
 WHERE t.kind_id = 1
 AND mi1.info_type_id = 3
-AND mi2.info_type_id = 105
-AND mi3.info_type_id = 8 
+AND mi3.info_type_id = 8 AND mi3.info = 'USA'
 AND mi4.info_type_id = 1 AND mi4.info > 40
-AND mii.info_type_id = 100
+AND mii.info_type_id = 100 AND mii.info> 500
 AND production_year BETWEEN 1900 AND 2016;
 ")
 #efficient SQL queries: making use of an index column with t.kind_id = 1
@@ -39,9 +38,9 @@ AND production_year BETWEEN 1900 AND 2016;
 #AND mi3.info = 'USA'
 # AND mii.info> 500
 #============= Saving dataframe with percentage of Westerns over all films =======
-genreBudget <- genreBudget %>%
+specgenre <- specgenre %>%
   mutate(isWest = ifelse(genre == 'Western',TRUE,FALSE))
-westM <- genreBudget %>%
+westM <- specgenre %>%
   filter(isWest == TRUE)
 numM <- genreBudget %>%
   group_by(title, production_year) %>%
@@ -60,58 +59,24 @@ perWest <- numM2 %>%
 save(perWest,file="perWest.rda")
 save(westM, file="westM.rda")
 
-geom_point(x=2015, y=110,shape=21, fill="white")+
-  annotate("text", x = 2005, y = 105, label = "110 Westerns\nin 2015",colour = "navy", size = 3,family = "PT Sans") +
-  geom_point(x=1950, y=12,shape=21, fill="white")+
-  annotate("text", x = 1950, y = 25, label = "12 Westerns\n14% of total\nin 1950",colour = "navy", size = 3,family = "PT Sans")+
+#geom_point(x=2015, y=110,shape=21, fill="white")+
+  #annotate("text", x = 2005, y = 105, label = "110 Westerns\nin 2015",colour = "navy", size = 3,family = "PT Sans") +
 ```
-```{r}
-ggplot(data = medBudget,aes(x=production_year, y=bud))+
-  geom_rect(xmin=1980,xmax=2004, ymin=-Inf, ymax=Inf, fill="grey",alpha=0.05)+
-  geom_point(color = "brown")+ 
-  labs(x = "Production Year", y="Median Budget\n(in Millions)") +
-  scale_y_continuous(labels = scales::dollar_format())
-```
-
 ```{r,echo=FALSE}
 load("perWest.rda")
-```
-
-```{r,echo=FALSE}
 load("westM.rda")
 ```
 
-```{r}
-#=============== Focusing on Western films and their Budget =============
-westBudget <- westM %>%
-  select(title, production_year, Budget) %>%
-  filter(grepl("\\$",Budget)) %>%
-  mutate(Budget = parse_number(Budget)) 
-
-medBudget<-westBudget %>%
-  group_by(production_year) %>%
-  summarise(middle = median(Budget)) %>%
-  mutate(bud = middle/10^6)
-
-graphB <- ggplot(medBudget,aes(x=production_year, y=bud)) +
-  geom_point()+ 
-  labs(x = "Production Year", y="Median Budget\n(in Millions)") +
-  scale_y_continuous(labels = scales::dollar_format())
-```
-##Percentage and Number of Western Films Over Time
-##Median Budget of Western Films 
 
 ```{r}
 graphC <- ggplot(perWest,aes(x = production_year, y = percentage)) + 
-  geom_rect(xmin=1980,xmax=2004, ymin=-Inf, ymax=Inf, fill="grey",alpha=0.05)+
+  #geom_rect(xmin=1980,xmax=2015, ymin=-Inf, ymax=Inf, fill="grey",alpha=0.05)+
   geom_smooth(color = "red") +
   geom_smooth(aes(x = production_year, y=NW),color = "orange") + 
   labs(x = "Production Year", y="Percentage of Western Movies (%)") + 
   scale_y_continuous(expand=c(0.03,0),breaks=seq(0,90,30), labels = c("0%","30%","60%","90%"),sec.axis = sec_axis(~.*1, name = "Number of Western Movies"))+ 
-  geom_point(data = medBudget,aes(x=production_year, y=bud), color = "brown")+ 
   theme(axis.title.y = element_text(colour = "red"),axis.text.y = element_text(color = "red"), axis.text.y.right = element_text(color = "orange"),axis.title.y.right = element_text(colour = "orange"))
 ```
-###Graph C
 ##Percentage and Number of Western Films Over Time
 ```{r, message=FALSE,echo=FALSE,warning=FALSE}
 graphC
