@@ -9,6 +9,7 @@ output:
 ![3 cowboy image address](https://cdn1.thr.com/sites/default/files/imagecache/landscape_928x523/2015/07/becoming_bulletproof_still_h_15.jpg)
 ![stereotyped ways to die in west image address](http://forumcinemaslv.blob.core.windows.net/1012/Event_7446/landscape_large/millionways_670.jpg)
 ![logan a western?](https://vignette.wikia.nocookie.net/xmenmovies/images/7/7c/Caliban_%26_Logan_%28Mexico%29.png/revision/latest?cb=20170518092739)
+
 Genres: Action | Drama | Sci-Fi | Thriller
 
 Definition of "movie" defined by filters enacted on the dataset provided by imdb:
@@ -129,7 +130,7 @@ load("ratings.rda")
 ```{r, message=FALSE,echo=FALSE,warning=FALSE}
 graphP <- ggplot(perWest,aes(x = production_year, y = percentage)) + 
   #geom_rect(xmin=1980,xmax=2015, ymin=-Inf, ymax=Inf, fill="grey",alpha=0.05)+
-  geom_point(data = ratings, aes(x = production_year, y = mean)) +
+  geom_point(data = ratings, aes(x = production_year, y = mean), color = "brown") +
   geom_smooth(color = "red", se=FALSE) +
   geom_smooth(aes(x = production_year, y=NW),color = "orange" , se=FALSE) + 
   labs(x = "Production Year", y="Percentage of Western Movies (%)") + 
