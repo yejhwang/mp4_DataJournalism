@@ -10,6 +10,21 @@ output:
 ![stereotyped ways to die in west image address](http://forumcinemaslv.blob.core.windows.net/1012/Event_7446/landscape_large/millionways_670.jpg)
 ![logan a western?](https://vignette.wikia.nocookie.net/xmenmovies/images/7/7c/Caliban_%26_Logan_%28Mexico%29.png/revision/latest?cb=20170518092739)
 Genres: Action | Drama | Sci-Fi | Thriller
+
+Definition of "movie" defined by filters enacted on the dataset provided by imdb:
+t.kind_id = 1 specifies for only Movies rather than TV shows or TV movies
+specified movies of the USA
+that were longer than 40 minutes (the Academy of Motion Picture Arts and Sciences defines a short film as "an original motion picture that has a running time of 40 minutes or less, including all credits") Thus, dataset excludes short film.
+and had more than 500 votes
+These minimal requirements allowed room for independent films to be included while still meeting the requirements of a "movie" that were more specific than imdb's definition.
+
+
+cowboys-and-indians
+anti-hero (ine)
+indians
+supernatural
+anti-hero
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(mdsr)
@@ -38,6 +53,11 @@ AND mi4.info_type_id = 1 AND mi4.info > 40
 AND mii.info_type_id = 100 AND mii.info> 500
 AND t.production_year BETWEEN 1900 AND 2016;")
 
+#efficient SQL queries: making use of an index column with t.kind_id = 1
+#t.kind_id = 1 specifies for only Movies rather than TV shows or TV movies
+#specified movies of the USA
+#that were longer than 40 minutes (to exclude short films)
+#and had more than 500 votes
 #============= Data focusing on number of Westerns over the years ===============
 withRating <- withRating %>%
   mutate(isWest = ifelse(genre == 'Western',TRUE,FALSE))
@@ -55,28 +75,15 @@ numM <- withRating %>%
 perWest <- numM %>%
   left_join(numWest, by = c("production_year"="production_year")) %>%
   mutate(percentage = NW/N*100)
+save(perWest,file="perWest.rda")
 #============= Saving dataframe with averaged ratings by year ====================
 ratings <- westM %>%
   mutate(Rating = parse_number(Rating)) %>%
   group_by(production_year) %>%
   summarise(mean = mean(Rating), n = n())
-```
-```{r}
-#mean rating
-#efficient SQL queries: making use of an index column with t.kind_id = 1
-#t.kind_id = 1 specifies for only Movies rather than TV shows or TV movies
-#AND mi3.info = 'USA'
-# AND mii.info> 500
-save(perWest,file="perWest.rda")
-save(westM, file="westM.rda")
-```
-```{r,echo=FALSE}
-load("perWest.rda")
-load("westM.rda")
-```
+save(ratings, file="ratings.rda")
 
-
-```{r,eval=FALSE}
+#============= Saving dataframe with specific keywords to consider ================
 
 keyShifts <- db%>%dbGetQuery("SELECT production_year, keyword, COUNT(DISTINCT t.id) as count
 FROM title t
@@ -96,11 +103,16 @@ AND production_year BETWEEN 1900 AND 2016
 AND (k.keyword LIKE '%indians%' OR k.keyword LIKE '%anti-hero%' OR k.keyword LIKE '%supernatural%')
 GROUP BY production_year, keyword;
 ")
-```
-```{r}
+
 byKeyword <- keyShifts %>%
   mutate(indian = ifelse(grepl("indian", x = keyword),count,0),antihero = ifelse(grepl("anti-hero", x = keyword),count,0),supernatural = ifelse(grepl("supernatural", x = keyword),count,0))
 
+save(byKeyword, file="byKeyword.rda")
+```
+
+```{r}
+#======== Finding the number of Westerns described with specific keywords (by year) ========
+load("byKeyword.rda")
 numKeyword <- byKeyword %>%
   select(production_year, indian, antihero, supernatural) %>%
   group_by(production_year) %>%
@@ -108,31 +120,11 @@ numKeyword <- byKeyword %>%
   gather(Keywords, Count, -production_year) %>%
   filter(Count!=0)
 ```
-('cowboys-and-indians', 'anti-hero','anti-heroine')
-cowboys-and-indians
-anti-hero (ine)
-AND mi.info LIKE '%NC-17%'
-indians
-supernatural
-anti-hero
 
-```{r}
-ggplot(numKeyword, aes(x=production_year, y = Count,fill = Keywords))+
-  geom_bar(width=0.8, position = position_dodge(width=0.6), stat="identity") 
-
-ggplot(numKeyword, aes(x=production_year, y = Count,fill = Keywords))+
-  geom_area(position = "stack") 
-
-ggplot(ratings, aes(x = production_year, y = mean))+
-  geom_point() +
-  geom_smooth()
+```{r,echo=FALSE}
+load("perWest.rda")
+load("ratings.rda")
 ```
-```{r}
-maxRat <- ratings %>%
-  arrange(mean)
-```
-FilL <- c("#232066", "#E91D0E")
-    scale_fill_manual(values=FilL, name = "Candidate Party\n   Affiliation") +
 
 ```{r, message=FALSE,echo=FALSE,warning=FALSE}
 graphP <- ggplot(perWest,aes(x = production_year, y = percentage)) + 
@@ -148,10 +140,6 @@ graphP <- ggplot(perWest,aes(x = production_year, y = percentage)) +
 graphP
 ```
 
-```{r}
-p <- ggplotly(graphP)
-p
-```
 
 [GitHub repository link](https://github.com/yejhwang/mp4_DataJournalism.git)
 
