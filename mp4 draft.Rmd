@@ -1,30 +1,19 @@
 ---
-title: "The Rebirth of Westerns or their Death?"
-author: "Yejin Hwang"
-date: "12/3/2017"
 output: 
   html_document:
     code_folding: hide
+    theme: cerulean
 ---
+`r format(Sys.Date(), "%B %e, %Y")`
+#The Rebirth of Westerns or their Death?
+By Yejin Hwang
+Filed under Movies
+Get the data on [GitHub](https://github.com/yejhwang/mp4_DataJournalism.git)
+
 ![3 cowboy image address](https://cdn1.thr.com/sites/default/files/imagecache/landscape_928x523/2015/07/becoming_bulletproof_still_h_15.jpg)
 ![stereotyped ways to die in west image address](http://forumcinemaslv.blob.core.windows.net/1012/Event_7446/landscape_large/millionways_670.jpg)
 ![logan a western?](https://vignette.wikia.nocookie.net/xmenmovies/images/7/7c/Caliban_%26_Logan_%28Mexico%29.png/revision/latest?cb=20170518092739)
 
-Genres: Action | Drama | Sci-Fi | Thriller
-
-Definition of "movie" defined by filters enacted on the dataset provided by imdb:
-t.kind_id = 1 specifies for only Movies rather than TV shows or TV movies
-specified movies of the USA
-that were longer than 40 minutes (the Academy of Motion Picture Arts and Sciences defines a short film as "an original motion picture that has a running time of 40 minutes or less, including all credits") Thus, dataset excludes short film.
-and had more than 500 votes
-These minimal requirements allowed room for independent films to be included while still meeting the requirements of a "movie" that were more specific than imdb's definition.
-
-
-cowboys-and-indians
-anti-hero (ine)
-indians
-supernatural
-anti-hero
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -141,7 +130,5 @@ graphP <- ggplot(perWest,aes(x = production_year, y = percentage)) +
 graphP
 ```
 
-
-[GitHub repository link](https://github.com/yejhwang/mp4_DataJournalism.git)
 
 
