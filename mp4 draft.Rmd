@@ -6,7 +6,10 @@ output:
   html_document:
     code_folding: hide
 ---
-
+![3 cowboy image address](https://cdn1.thr.com/sites/default/files/imagecache/landscape_928x523/2015/07/becoming_bulletproof_still_h_15.jpg)
+![stereotyped ways to die in west image address](http://forumcinemaslv.blob.core.windows.net/1012/Event_7446/landscape_large/millionways_670.jpg)
+![logan a western?](https://vignette.wikia.nocookie.net/xmenmovies/images/7/7c/Caliban_%26_Logan_%28Mexico%29.png/revision/latest?cb=20170518092739)
+Genres: Action | Drama | Sci-Fi | Thriller
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(mdsr)
@@ -35,7 +38,7 @@ AND mi4.info_type_id = 1 AND mi4.info > 40
 AND mii.info_type_id = 100 AND mii.info> 500
 AND t.production_year BETWEEN 1900 AND 2016;")
 
-#============= Saving dataframe with number of Westerns over the years ==========
+#============= Data focusing on number of Westerns over the years ===============
 withRating <- withRating %>%
   mutate(isWest = ifelse(genre == 'Western',TRUE,FALSE))
 westM <- withRating %>%
@@ -43,7 +46,7 @@ westM <- withRating %>%
 numWest <- westM %>%
   group_by(production_year) %>%
   summarise(NW = n())
-#============= Saving dataframe with percentage of Westerns over all films =======
+#============= Saving dataframe with percentage of Westerns over all films ======
 numM <- withRating %>%
   group_by(title, production_year) %>%
   do(head(.,n=1)) %>%
@@ -52,6 +55,11 @@ numM <- withRating %>%
 perWest <- numM %>%
   left_join(numWest, by = c("production_year"="production_year")) %>%
   mutate(percentage = NW/N*100)
+#============= Saving dataframe with averaged ratings by year ====================
+ratings <- westM %>%
+  mutate(Rating = parse_number(Rating)) %>%
+  group_by(production_year) %>%
+  summarise(mean = mean(Rating), n = n())
 ```
 ```{r}
 #mean rating
@@ -114,6 +122,14 @@ ggplot(numKeyword, aes(x=production_year, y = Count,fill = Keywords))+
 
 ggplot(numKeyword, aes(x=production_year, y = Count,fill = Keywords))+
   geom_area(position = "stack") 
+
+ggplot(ratings, aes(x = production_year, y = mean))+
+  geom_point() +
+  geom_smooth()
+```
+```{r}
+maxRat <- ratings %>%
+  arrange(mean)
 ```
 FilL <- c("#232066", "#E91D0E")
     scale_fill_manual(values=FilL, name = "Candidate Party\n   Affiliation") +
@@ -121,10 +137,11 @@ FilL <- c("#232066", "#E91D0E")
 ```{r, message=FALSE,echo=FALSE,warning=FALSE}
 graphP <- ggplot(perWest,aes(x = production_year, y = percentage)) + 
   #geom_rect(xmin=1980,xmax=2015, ymin=-Inf, ymax=Inf, fill="grey",alpha=0.05)+
+  geom_point(data = ratings, aes(x = production_year, y = mean)) +
   geom_smooth(color = "red", se=FALSE) +
   geom_smooth(aes(x = production_year, y=NW),color = "orange" , se=FALSE) + 
   labs(x = "Production Year", y="Percentage of Western Movies (%)") + 
-  scale_y_continuous(expand=c(0.03,0),breaks=seq(0,90,30), labels = c("0%","30%","60%","90%"),sec.axis = sec_axis(~.*1, name = "Number of Western Movies"))+ 
+  scale_y_continuous(expand=c(0.03,0),breaks=seq(0,25,5), labels = c("0%","5%","10%","15%","20%","25%"),sec.axis = sec_axis(~.*1, name = "Number of Western Movies",breaks=seq(0,25,5)))+ 
   theme(axis.title.y = element_text(colour = "red"),axis.text.y = element_text(color = "red"), axis.text.y.right = element_text(color = "orange"),axis.title.y.right = element_text(colour = "orange"))+
   geom_bar(data = numKeyword, aes(x=production_year, y = Count,fill = Keywords),width=0.8, position = position_dodge(width=0.6), stat="identity")
 
