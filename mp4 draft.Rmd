@@ -5,9 +5,13 @@ output:
     theme: cerulean
 ---
 `r format(Sys.Date(), "%B %e, %Y")`
+
 #The Rebirth of Westerns or their Death?
+
 By Yejin Hwang
+
 Filed under Movies
+
 Get the data on [GitHub](https://github.com/yejhwang/mp4_DataJournalism.git)
 
 ![3 cowboy image address](https://cdn1.thr.com/sites/default/files/imagecache/landscape_928x523/2015/07/becoming_bulletproof_still_h_15.jpg)
@@ -116,7 +120,7 @@ load("perWest.rda")
 load("ratings.rda")
 ```
 
-```{r, message=FALSE,echo=FALSE,warning=FALSE}
+```{r, message=FALSE,warning=FALSE}
 graphP <- ggplot(perWest,aes(x = production_year, y = percentage)) + 
   #geom_rect(xmin=1980,xmax=2015, ymin=-Inf, ymax=Inf, fill="grey",alpha=0.05)+
   geom_point(data = ratings, aes(x = production_year, y = mean), color = "brown") +
