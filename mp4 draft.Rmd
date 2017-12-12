@@ -15,6 +15,45 @@ db <- dbConnect_scidb(dbname = "imdb")
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
+library(plotly)
+```
+```{r}
+withRating <- db %>%
+  dbGetQuery("SELECT t.title, t.production_year, mi1.info  AS genre, mi2.info AS Rating
+FROM title t
+JOIN movie_info mi1 ON mi1.movie_id = t.id
+JOIN movie_info_idx mi2 ON mi2.movie_id = t.id
+LEFT JOIN movie_info mi3 ON mi3.movie_id = t.id
+LEFT JOIN movie_info mi4 ON mi4.movie_id = t.id
+LEFT JOIN movie_info_idx mii ON mii.movie_id = t.id
+WHERE t.kind_id = 1
+AND mi1.info_type_id = 3
+AND mi2.info_type_id = 101 
+AND mi3.info_type_id = 8 AND mi3.info = 'USA'
+AND mi4.info_type_id = 1 AND mi4.info > 40
+AND mii.info_type_id = 100 AND mii.info> 500
+AND t.production_year BETWEEN 1900 AND 2016;")
+
+#============= Saving dataframe with number of Westerns over the years ==========
+withRating <- withRating %>%
+  mutate(isWest = ifelse(genre == 'Western',TRUE,FALSE))
+westM <- withRating %>%
+  filter(isWest == TRUE)
+numWest <- westM %>%
+  group_by(production_year) %>%
+  summarise(NW = n())
+#============= Saving dataframe with percentage of Westerns over all films =======
+numM <- withRating %>%
+  group_by(title, production_year) %>%
+  do(head(.,n=1)) %>%
+  group_by(production_year) %>%
+  summarise(N = n())
+perWest <- numM %>%
+  left_join(numWest, by = c("production_year"="production_year")) %>%
+  mutate(percentage = NW/N*100)
+```
+```{r}
+
 ```
 
 ```{r, eval=FALSE}
@@ -33,6 +72,7 @@ AND mi4.info_type_id = 1 AND mi4.info > 40
 AND mii.info_type_id = 100 AND mii.info> 500
 AND production_year BETWEEN 1900 AND 2016;
 ")
+#mean rating
 #efficient SQL queries: making use of an index column with t.kind_id = 1
 #t.kind_id = 1 specifies for only Movies rather than TV shows or TV movies
 #AND mi3.info = 'USA'
@@ -54,13 +94,9 @@ numWest <- westM %>%
 perWest <- numM2 %>%
   left_join(numWest, by = c("production_year"="production_year")) %>%
   mutate(percentage = NW/N*100)
-```
-```{r}
+
 save(perWest,file="perWest.rda")
 save(westM, file="westM.rda")
-
-#geom_point(x=2015, y=110,shape=21, fill="white")+
-  #annotate("text", x = 2005, y = 105, label = "110 Westerns\nin 2015",colour = "navy", size = 3,family = "PT Sans") +
 ```
 ```{r,echo=FALSE}
 load("perWest.rda")
@@ -68,19 +104,6 @@ load("westM.rda")
 ```
 
 
-```{r}
-graphC <- ggplot(perWest,aes(x = production_year, y = percentage)) + 
-  #geom_rect(xmin=1980,xmax=2015, ymin=-Inf, ymax=Inf, fill="grey",alpha=0.05)+
-  geom_smooth(color = "red") +
-  geom_smooth(aes(x = production_year, y=NW),color = "orange") + 
-  labs(x = "Production Year", y="Percentage of Western Movies (%)") + 
-  scale_y_continuous(expand=c(0.03,0),breaks=seq(0,90,30), labels = c("0%","30%","60%","90%"),sec.axis = sec_axis(~.*1, name = "Number of Western Movies"))+ 
-  theme(axis.title.y = element_text(colour = "red"),axis.text.y = element_text(color = "red"), axis.text.y.right = element_text(color = "orange"),axis.title.y.right = element_text(colour = "orange"))
-```
-##Percentage and Number of Western Films Over Time
-```{r, message=FALSE,echo=FALSE,warning=FALSE}
-graphC
-```
 ```{r,eval=FALSE}
 
 keyShifts <- db%>%dbGetQuery("SELECT production_year, keyword, COUNT(DISTINCT t.id) as count
@@ -104,10 +127,7 @@ GROUP BY production_year, keyword;
 ```
 cowboys-and-indians
 anti-hero (ine)
-```{r}
-#twoKey <- keyShifts %>%
-  #mutate(ifelse(keyword = c('anti-hero','anti-heroine'),))
-```
+
 ```{r}
 save(keyShifts, file="keyShifts.rda")
 load("keyShifts.rda")
@@ -119,9 +139,22 @@ ggplot(keyShifts, aes(x=production_year, y = count,fill = keyword))+
 FilL <- c("#232066", "#E91D0E")
     scale_fill_manual(values=FilL, name = "Candidate Party\n   Affiliation") +
 
-```{r,message=FALSE,error=FALSE}
-graphC +
+```{r, message=FALSE,echo=FALSE,warning=FALSE}
+graphP <- ggplot(perWest,aes(x = production_year, y = percentage)) + 
+  #geom_rect(xmin=1980,xmax=2015, ymin=-Inf, ymax=Inf, fill="grey",alpha=0.05)+
+  geom_smooth(color = "red", se=FALSE) +
+  geom_smooth(aes(x = production_year, y=NW),color = "orange" , se=FALSE) + 
+  labs(x = "Production Year", y="Percentage of Western Movies (%)") + 
+  scale_y_continuous(expand=c(0.03,0),breaks=seq(0,90,30), labels = c("0%","30%","60%","90%"),sec.axis = sec_axis(~.*1, name = "Number of Western Movies"))+ 
+  theme(axis.title.y = element_text(colour = "red"),axis.text.y = element_text(color = "red"), axis.text.y.right = element_text(color = "orange"),axis.title.y.right = element_text(colour = "orange"))+
   geom_bar(data = keyShifts, aes(x=production_year, y = count,fill = keyword),width=0.8, position = position_dodge(width=0.6), stat="identity")
+
+graphP
+```
+
+```{r}
+p <- ggplotly(graphP)
+p
 ```
 
 [GitHub repository link](https://github.com/yejhwang/mp4_DataJournalism.git)
