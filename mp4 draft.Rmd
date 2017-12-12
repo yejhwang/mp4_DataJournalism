@@ -17,7 +17,8 @@ library(dplyr)
 library(ggplot2)
 library(plotly)
 ```
-```{r}
+
+```{r, eval=FALSE}
 withRating <- db %>%
   dbGetQuery("SELECT t.title, t.production_year, mi1.info  AS genre, mi2.info AS Rating
 FROM title t
@@ -53,48 +54,11 @@ perWest <- numM %>%
   mutate(percentage = NW/N*100)
 ```
 ```{r}
-
-```
-
-```{r, eval=FALSE}
-specgenre <- db %>%
-  dbGetQuery("SELECT title, production_year, mi1.info  AS genre,mi4.info AS Runtime, mii.info AS Votes
-FROM title t
-JOIN movie_info mi1 ON mi1.movie_id = t.id
-JOIN movie_info mi2 ON mi2.movie_id = t.id
-LEFT JOIN movie_info mi3 ON mi3.movie_id = t.id
-LEFT JOIN movie_info mi4 ON mi4.movie_id = t.id
-LEFT JOIN movie_info_idx mii ON mii.movie_id = t.id
-WHERE t.kind_id = 1
-AND mi1.info_type_id = 3
-AND mi3.info_type_id = 8 AND mi3.info = 'USA'
-AND mi4.info_type_id = 1 AND mi4.info > 40
-AND mii.info_type_id = 100 AND mii.info> 500
-AND production_year BETWEEN 1900 AND 2016;
-")
 #mean rating
 #efficient SQL queries: making use of an index column with t.kind_id = 1
 #t.kind_id = 1 specifies for only Movies rather than TV shows or TV movies
 #AND mi3.info = 'USA'
 # AND mii.info> 500
-#============= Saving dataframe with percentage of Westerns over all films =======
-specgenre <- specgenre %>%
-  mutate(isWest = ifelse(genre == 'Western',TRUE,FALSE))
-westM <- specgenre %>%
-  filter(isWest == TRUE)
-numM <- genreBudget %>%
-  group_by(title, production_year) %>%
-  do(head(.,n=1))
-numM2 <- numM %>%
-  group_by(production_year) %>%
-  summarise(N = n())
-numWest <- westM %>%
-  group_by(production_year) %>%
-  summarise(NW = n())
-perWest <- numM2 %>%
-  left_join(numWest, by = c("production_year"="production_year")) %>%
-  mutate(percentage = NW/N*100)
-
 save(perWest,file="perWest.rda")
 save(westM, file="westM.rda")
 ```
@@ -121,20 +85,35 @@ AND mi3.info_type_id = 8 AND mi3.info = 'USA'
 AND mi4.info_type_id = 1 AND mi4.info > 40
 AND mii.info_type_id = 100 AND mii.info> 500
 AND production_year BETWEEN 1900 AND 2016
-AND k.keyword IN ('cowboys-and-indians', 'anti-hero','anti-heroine')
+AND (k.keyword LIKE '%indians%' OR k.keyword LIKE '%anti-hero%' OR k.keyword LIKE '%supernatural%')
 GROUP BY production_year, keyword;
 ")
 ```
+```{r}
+byKeyword <- keyShifts %>%
+  mutate(indian = ifelse(grepl("indian", x = keyword),count,0),antihero = ifelse(grepl("anti-hero", x = keyword),count,0),supernatural = ifelse(grepl("supernatural", x = keyword),count,0))
+
+numKeyword <- byKeyword %>%
+  select(production_year, indian, antihero, supernatural) %>%
+  group_by(production_year) %>%
+  summarise(indian = sum(indian),antihero = sum(antihero),supernatural = sum(supernatural)) %>%
+  gather(Keywords, Count, -production_year) %>%
+  filter(Count!=0)
+```
+('cowboys-and-indians', 'anti-hero','anti-heroine')
 cowboys-and-indians
 anti-hero (ine)
+AND mi.info LIKE '%NC-17%'
+indians
+supernatural
+anti-hero
 
 ```{r}
-save(keyShifts, file="keyShifts.rda")
-load("keyShifts.rda")
-```
-```{r}
-ggplot(keyShifts, aes(x=production_year, y = count,fill = keyword))+
+ggplot(numKeyword, aes(x=production_year, y = Count,fill = Keywords))+
   geom_bar(width=0.8, position = position_dodge(width=0.6), stat="identity") 
+
+ggplot(numKeyword, aes(x=production_year, y = Count,fill = Keywords))+
+  geom_area(position = "stack") 
 ```
 FilL <- c("#232066", "#E91D0E")
     scale_fill_manual(values=FilL, name = "Candidate Party\n   Affiliation") +
@@ -147,7 +126,7 @@ graphP <- ggplot(perWest,aes(x = production_year, y = percentage)) +
   labs(x = "Production Year", y="Percentage of Western Movies (%)") + 
   scale_y_continuous(expand=c(0.03,0),breaks=seq(0,90,30), labels = c("0%","30%","60%","90%"),sec.axis = sec_axis(~.*1, name = "Number of Western Movies"))+ 
   theme(axis.title.y = element_text(colour = "red"),axis.text.y = element_text(color = "red"), axis.text.y.right = element_text(color = "orange"),axis.title.y.right = element_text(colour = "orange"))+
-  geom_bar(data = keyShifts, aes(x=production_year, y = count,fill = keyword),width=0.8, position = position_dodge(width=0.6), stat="identity")
+  geom_bar(data = numKeyword, aes(x=production_year, y = Count,fill = Keywords),width=0.8, position = position_dodge(width=0.6), stat="identity")
 
 graphP
 ```
