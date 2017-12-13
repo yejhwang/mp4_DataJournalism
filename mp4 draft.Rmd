@@ -15,9 +15,13 @@ Filed under Movies
 Get the data on [GitHub](https://github.com/yejhwang/mp4_DataJournalism.git)
 
 ![3 cowboy image address](https://cdn1.thr.com/sites/default/files/imagecache/landscape_928x523/2015/07/becoming_bulletproof_still_h_15.jpg)
-![stereotyped ways to die in west image address](http://forumcinemaslv.blob.core.windows.net/1012/Event_7446/landscape_large/millionways_670.jpg)
-![logan a western?](https://vignette.wikia.nocookie.net/xmenmovies/images/7/7c/Caliban_%26_Logan_%28Mexico%29.png/revision/latest?cb=20170518092739)
 
+Without the intrusion of technology and special effects, and without the formulaic love triangles of romantic comedies, the Western genre is able to bring nostalgia and an almost mythological, romantic perspective of the American frontier. Before the time of exponential growth in movie production during the late 1990s through the 2000s, Hollywood focused its production on Westerns during the industry’s silent era and through the early sound years. As the NYTimes reported in an article in 2007, Westerns comprised "nearly a fifth of all feature films from the silent era through the 1950s". In other words, it played a vital role as a popular narrative form.
+The Western had become a quintessential genre of the American film industry.
+
+However, articles such as “The Western Is Dead; Long Live the Western”[Crisis Magazine] has emerged with the increased debate that the Western genre was losing its audience. The very same characteristics that made the Western so unique from other genres, the lack of technology and computer generated graphics, have made the Western distant towards mass audiences. To a certain extent, the specifically American genre could be an obstacle in reaching the global audience.
+
+So how do we determine if a genre is dead?
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -134,5 +138,34 @@ graphP <- ggplot(perWest,aes(x = production_year, y = percentage)) +
 graphP
 ```
 
+Looking at the graph, there was a significant increase up till the 1960s but steadily decreased till the the 2000s. Along a similar line, the percentage of Western Movies in comparison to all other movies, reached the same peak in the 1960s but decreased until the 2000s. 
 
+Yet, it is difficult to assume that the popularity of Westerns decreased since the 1960s, because when looking at the average ratings of Western film by year, it has decreased from 8% since 1926; the maximum mean rating in the 2000s was 6.8%.
 
+The death of a genre cannot be determined by solely the rating either, as there is a clear increase in Western films in the 2000s. But is that enough to conclude a revival of the Western?
+
+At this point it is important to understand a bit of the Western’s history.
+
+The popularity and physical requirements of the genre, especially locations, led the film industry to migrate to Hollywood after 1910. Because the first films were shot outdoors or on open-air stages, along with the requirements of early film stock and cameras, the Western was the perfect fit.
+This low-cost, formulaic genre may account for the more contemporary trend and definition of a Western being an independent film as they run on a smaller budget.
+[NYTimes](http://www.nytimes.com/2007/11/10/magazine/11schatz.html)
+ 
+They have been a central U.S. genre as it brought about Hollywood’s name value in the early 1900s. With the outdoor setting, and props such as rolling hay, the small budget was the perfect fit for the early film industry.
+ 
+Western films gained its own name through mainstream film such as Stagecoach, 1939 and The Searchers, 1956. It has continued to flourish in its own way through popular independent films such as Brokeback Mountain, in 2005.
+
+Thus, it leads us to believe that the Western simply has a different audience. Whether it is a minor population that enjoys independent film, or the change in the culture of the masses, the perspective of its audience is impacting the direction that Western films are being produced.
+
+While there was a more definite stereotypes for what the American frontier represented, as shown in a more recent movie [“A Million Ways to Die in the West”](http://www.imdb.com/title/tt2557490/) (2014), the keyword “indian” is used significantly less towards the later part of the 1900s. As the public became more aware of the issues surrounding the the expansion of America, and the need to become more politically aware of minorities, certain topics could have caused the loss of its viewers.
+
+![stereotyped ways to die in west image address](http://forumcinemaslv.blob.core.windows.net/1012/Event_7446/landscape_large/millionways_670.jpg)
+
+On the other hand, the trend to fuse genres in the hope to widen the range of movie-goers to a particular movie impacted the Western as well.
+The idea of the anti-hero or heroine also took its place within the Western genre, and the less common, but highly possible supernatural aspects.
+
+In fact in the more recent movie, [Logan](http://www.imdb.com/title/tt3315342/)(2017), the setting and ideas were in conjunction with those of the Western. 
+
+![logan a western?](https://vignette.wikia.nocookie.net/xmenmovies/images/7/7c/Caliban_%26_Logan_%28Mexico%29.png/revision/latest?cb=20170518092739)
+
+Yet, imbd does not include 'Western' in its genre. 
+It may be that the imdb is unable to keep up to the changing definitions of the Western. As a culture shifts, so can a genre. A Western, thus, is a Western based on its themes and values rather than being dependent on what other ideas it fuses with.
