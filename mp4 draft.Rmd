@@ -174,7 +174,6 @@ Entering the 21st-century, the last bit of the line graph shows an increase in W
 
 Westerns can be formulaic like any other genre with characters having a stereotypical role as satirically represented in [“A Million Ways to Die in the West”](http://www.imdb.com/title/tt2557490/)(2014).
 But these formulas change as societal expectations shift. For instance, the keyword “indian” is used significantly less in describing Westerns towards the later part of the 1900s. As the public became more aware of the issues surrounding the expansion of America, and the need to become more politically aware of minorities, certain topics that would have caused the loss of its viewers were avoided.
-In another [article by Mark Tapson](https://acculturated.com/why-todays-pc-police-would-ban-blazing-saddles/) titled, *Why Today’s PC Police Would Ban [‘Blazing Saddles’](http://www.imdb.com/title/tt0071230/)*. He observes that “In [the film’s] pre-PC[politically correct] era(produced in 1974), [the movie] was bursting at the seams with jokes about rape and flatulence, stereotypes of all races, and more N-words than one would ever hear onscreen today outside of a Tarantino film.” 
 
 Although inappropriate themes were severed, new ideas such as the anti-hero (or heroine) established itself as a subgenre, also known as [Revisionist Western](https://en.wikipedia.org/wiki/Revisionist_Western) through films such as *The Searchers* (Ford, 1956). As shown in the graphic through the frequency of red bars that denote “anti-hero”, Westerns were revamped to have heroes that sometimes act in their self-interest rather than courage or moral convictions. It was a shift towards more realistic, and relatable characters. 
 
@@ -188,12 +187,12 @@ The last keyword I observed was “supernatural”. Occuring only after entering
 
 Even though [some say](https://www.theatlantic.com/entertainment/archive/2013/07/how-the-western-was-lost-and-why-it-matters/278057/) “[the Western] audience seems to be finally drying up... Western fans are getting older and whiter with respect to the overall population,”the Western simply has a different audience.
 
-Just as the Western had shifted from plots with battles of black hats vs. white hats, to a grey area with more ambiguity as to who is the “good” and the “bad”, the genre is continuously changing. Thus, based on the keywords, IMDB's dataset reflected the different definitions of a Western in the 2000s compared to the 1950s. The seemingly low percentage of Westerns may in part be due to IMDb simply not being in sync with the new definition of the Western.
+Just as the Western had shifted from plots with battles of black hats vs. white hats, to a grey area with more ambiguity as to who is the “good” and the “bad”, the genre is continuously changing, and so is its audience. 
+The seemingly low percentage of Westerns may in part be due to IMDb simply not being in sync with the new definition of the Western.
 
-Rather than being dead, the Western simply has a different audience. Whether it is a minor population that enjoys independent film, or the change in the culture of the masses, the perspective of its audience is impacting the direction that Western films are being produced.
 And while there may be less mainstream movies and has become ever so difficult for a Western to be a blockbuster, the audience is not “drying up”, rather, they are changing. 
-Although not all can flourish as a blockbuster or as a popular independent film, the way Brokeback Mountain succeeded in 2005, 
-the availability of other mediums such as [youtube](https://www.youtube.com/watch?v=9zW_VNGK138) can quench the Western nostalgia while not getting enough credit for it. Because in the end, a genre is based on the values and expectations of the audience rather than the fusion of different ideas and genres. 
+Although not all can flourish as a blockbuster or as a popular independent film, the way *Brokeback Mountain* succeeded in 2005, 
+the availability of other mediums such as [YouTube](https://www.youtube.com/watch?v=9zW_VNGK138) can quench the Western nostalgia while not getting enough credit for it. Because in the end, a genre is kept alive based on the values and expectations of the audience rather than the fusion of different ideas and genres. 
 
 
 ```{r}
