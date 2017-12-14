@@ -140,6 +140,11 @@ graphP
 
 Looking at the graph, there was a significant increase up till the 1960s but steadily decreased till the the 2000s. Along a similar line, the percentage of Western Movies in comparison to all other movies, reached the same peak in the 1960s but decreased until the 2000s. 
 
+A footnote [^1]
+
+
+[^1]: Here is the footnote. 
+
 Yet, it is difficult to assume that the popularity of Westerns decreased since the 1960s, because when looking at the average ratings of Western film by year, it has decreased from 8% since 1926; the maximum mean rating in the 2000s was 6.8%.
 
 The death of a genre cannot be determined by solely the rating either, as there is a clear increase in Western films in the 2000s. But is that enough to conclude a revival of the Western?
