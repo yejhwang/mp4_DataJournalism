@@ -12,7 +12,7 @@ By Yejin Hwang
 
 Filed under Movies
 
-Get the data on GitHub[^1]]
+Get the data on GitHub[^1]
 
 [^1]: https://github.com/yejhwang/mp4_DataJournalism.git
 
@@ -142,15 +142,6 @@ graphP
 
 Looking at the graph, there was a significant increase up till the 1960s but steadily decreased till the the 2000s. Along a similar line, the percentage of Western Movies in comparison to all other movies, reached the same peak in the 1960s but decreased until the 2000s. 
 
-`testing`
-`geom_smooth()`method
-
-A footnote [^1]
-A footnote [^2]
-
-
-[^1]: Here is the footnote. 
-[^2]: `geom_smooth()`method 
 
 
 Yet, it is difficult to assume that the popularity of Westerns decreased since the 1960s, because when looking at the average ratings of Western film by year, it has decreased from 8% since 1926; the maximum mean rating in the 2000s was 6.8%.
