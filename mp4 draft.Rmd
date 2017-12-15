@@ -126,13 +126,13 @@ load("ratings.rda")
 ```{r, message=FALSE,warning=FALSE}
 graphP <- ggplot(perWest,aes(x = production_year, y = percentage)) + 
   geom_smooth(color = "red", se=FALSE) +
-  geom_smooth(aes(x = production_year, y=NW),color = "orange" , se=FALSE) + 
   labs(x = "Production Year", y="Percentage of Western Movies (%)") + 
-  scale_y_continuous(expand=c(0.03,0),breaks=seq(0,25,5), labels = c("0%","5%","10%","15%","20%","25%"),sec.axis = sec_axis(~.*1, name = "Number of Western Movies",breaks=seq(0,25,5)))+ 
-  theme(axis.title.y = element_text(colour = "red"),axis.text.y = element_text(color = "red"), axis.text.y.right = element_text(color = "orange"),axis.title.y.right = element_text(colour = "orange"))+
+  scale_y_continuous(expand=c(0.03,0),breaks=seq(0,25,5), labels = c("0%","5%","10%","15%","20%","25%"))+ 
+  theme(axis.title.y = element_text(colour = "red"),axis.text.y = element_text(color = "red"))+
   geom_bar(data = numKeyword, aes(x=production_year, y = Count,fill = Keywords),width=0.8, position = position_dodge(width=0.6), stat="identity")
 
-graphP
+p <- ggplotly(graphP)
+p
 ```
 
 Looking at the percentage of Western movies represented in this graph[^3], the Western genre seems dead. 
